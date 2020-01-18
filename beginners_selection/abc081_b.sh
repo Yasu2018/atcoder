@@ -1,7 +1,11 @@
 #!/bin/bash
 
-#This code is an answer for the following question.
-#https://atcoder.jp/contests/abs/tasks/abc081_b
+# This code is an answer for the following question.
+# https://atcoder.jp/contests/abs/tasks/abc081_b
+#
+# My approach to solve
+# 1. Just keep deviding by 2 for all elements of the array by loop with counting
+# 2. Output the count when cannot be devided by 2.
 
 read n
 read -a array

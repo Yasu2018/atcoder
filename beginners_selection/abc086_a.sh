@@ -1,7 +1,10 @@
 #!/bin/bash
 
-#This code is an answer for the following question.
-#https://atcoder.jp/contests/abs/tasks/abc086_a
+# This code is an answer for the following question.
+# https://atcoder.jp/contests/abs/tasks/abc086_a
+#
+# My approach to solve
+# 1. Too simple to explain logic
 
 function validate_number(){
     if [ $1 -ge 1 ] && [ $1 -le 10000 ] ; then
