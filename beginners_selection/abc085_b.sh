@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This code is an answer for the following question.
-# https://atcoder.jp/contests/abs/tasks/abc088_b
+# https://atcoder.jp/contests/abs/tasks/abc085_b
 #
 # My approach to solve
 # 1. sort all numbers without n order by desc
