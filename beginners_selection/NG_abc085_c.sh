@@ -40,15 +40,13 @@ fi
 # possible maximum x
 max_x=$((Y/10000))
 
-order=0
 for ((x = max_x; 0 <= x; x--)); do
-    order=$((order+1))
 
     max_adjustable_amount=$((x*10000+5000*(N-x)))
     if [ $max_adjustable_amount -lt $Y ]; then
         #too less even maximum y, no need calculation anymore.
         echo "-1 -1 -1"
-        exit 4
+        exit 5
     fi
 
     min_adjustable_amount=$((x*10000+1000*(N-x)))
@@ -74,9 +72,9 @@ for ((x = max_x; 0 <= x; x--)); do
     fi
 
     y=$((diff_amount/4000))
-    echo "$x $y $((N-x-y)) order=$order"
+    echo "$x $y $((N-x-y))"
     exit 0
 done
 
 echo "-1 -1 -1"
-exit 4
+exit 6
