@@ -46,7 +46,7 @@ fi
 # calc a pattern changing the number of 500 yen coins by decreasing.
 used_count_of_500_yen_coin=$count_of_500_yen_coin
 
-# if there are 10 of 500 coins, and total_amount is 2xxx,
+# if there are 10 of 500 coins, and total_amount is 2750,
 # we don't need to calc the number of 500 coins when from 10 to 6.
 # hence, starting to calc from 5 to 0.
 if [ $used_count_of_500_yen_coin -gt $((total_amount/500)) ]; then
@@ -67,7 +67,7 @@ do
         # calc a pattern changing the number of 100 yen coins.
         used_count_of_100_yen_coin=$count_of_100_yen_coin
 
-        # if there are 10 coins of 100 yen, and remaining_amount is 2xx,
+        # if there are 10 coins of 100 yen, and remaining_amount is 250,
         # we don't need to calc the number of coins for 100 yen when from 10 to 3.
         # hence, starting to calc from 2 to 0.
         if [ $used_count_of_100_yen_coin -gt $((shortage_amount/100)) ]; then
