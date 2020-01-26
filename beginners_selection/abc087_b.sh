@@ -8,81 +8,84 @@
 # 2. Then try to reduce numer from c one by one.
 # 3. It mean using triple loop to reduce the number of a, b, c
 
-read a
-read b
-read c
-read x
+read count_of_500_yen_coin #same as "a"
+read count_of_100_yen_coin #same as "b"
+read count_of_50_yen_coin #same as "c"
+read total_amount #same as "x"
 
 # [BEGIN] validation
 
-if [ $a -lt 0 ] || [ $a -gt 50 ]; then
-    echo "invalid param a = $a"
+if [ $count_of_500_yen_coin -lt 0 ] || [ $count_of_500_yen_coin -gt 50 ]; then
+    echo "invalid param count_of_500_yen_coin = $count_of_500_yen_coin"
     exit 1
 fi
-if [ $b -lt 0 ] || [ $b -gt 50 ]; then
-    echo "invalid param b = $b"
+if [ $count_of_100_yen_coin -lt 0 ] || [ $count_of_100_yen_coin -gt 50 ]; then
+    echo "invalid param count_of_100_yen_coin = $count_of_100_yen_coin"
     exit 2
 fi
-if [ $c -lt 0 ] || [ $c -gt 50 ]; then
-    echo "invalid param c = $c"
+if [ $count_of_50_yen_coin -lt 0 ] || [ $count_of_50_yen_coin -gt 50 ]; then
+    echo "invalid param count_of_50_yen_coin = $count_of_50_yen_coin"
     exit 3
 fi
-if [ $((a+b+c)) -lt 1 ]; then
-    echo "a + b + c must be 1 or more"
+if [ $((count_of_500_yen_coin + count_of_100_yen_coin + count_of_50_yen_coin)) -lt 1 ]; then
+    echo "count_of_500_yen_coin + count_of_100_yen_coin + count_of_50_yen_coin must be 1 or more"
     exit 4
 fi
-if [ $x -lt 50 ] || [ $x -gt 20000 ]; then
-    echo "invalid param x = $x"
+if [ $total_amount -lt 50 ] || [ $total_amount -gt 20000 ]; then
+    echo "invalid param total_amount = $total_amount"
     exit 5
 fi
-if [ $((x%50)) -ne 0 ]; then
-    echo "x must be able to be devided by 50! : $x"
+if [ $((total_amount % 50)) -ne 0 ]; then
+    echo "total_amount ($total_amount) must be able to be devided by 50!"
     exit 6
 fi
 
 # [  END] validation
 
+
+# calc a pattern changing the number of 500 yen coins by decreasing.
+used_count_of_500_yen_coin=$count_of_500_yen_coin
+
+# if there are 10 of 500 coins, and total_amount is 2xxx,
+# we don't need to calc the number of 500 coins when from 10 to 6.
+# hence, starting to calc from 5 to 0.
+if [ $used_count_of_500_yen_coin -gt $((total_amount/500)) ]; then
+    used_count_of_500_yen_coin=$((total_amount/500))
+fi
+
+#echo "[DEBUG] used_count_of_500_yen_coin=$used_count_of_500_yen_coin"
+
 number_of_calc_way=0
-# calc a pattern changing the number of 500 yen coins.
-# ac is count of a (how many coins for a)
-for ((ac = a; 0 <= ac; ac--))
+for ((; 0 <= used_count_of_500_yen_coin; used_count_of_500_yen_coin--))
 do
-    buf=$((x-ac*500))
-    #echo "1buf=$buf"
-    if [ $buf -lt 0 ]; then
-        #echo "cannot calc when using $ac 500yen coins"
-        continue;
-    elif [ $buf -eq 0 ]; then
-        #echo "!!!! can calc when using $ac 500yen coins"
+    shortage_amount=$((total_amount-used_count_of_500_yen_coin*500))
+    if [ $shortage_amount -eq 0 ]; then
+        #echo "[DEBUG] !!!! can calc when using only 500 yen coins"
         number_of_calc_way=$((number_of_calc_way+1))
     else
+        # assert 0 < $remaining_amount
         # calc a pattern changing the number of 100 yen coins.
-        for ((bc = b; 0 <= bc; bc--))
+        used_count_of_100_yen_coin=$count_of_100_yen_coin
+
+        # if there are 10 coins of 100 yen, and remaining_amount is 2xx,
+        # we don't need to calc the number of coins for 100 yen when from 10 to 3.
+        # hence, starting to calc from 2 to 0.
+        if [ $used_count_of_100_yen_coin -gt $((shortage_amount/100)) ]; then
+            used_count_of_100_yen_coin=$((shortage_amount/100))
+        fi
+        #echo "[DEBUG] used_count_of_100_yen_coin=$used_count_of_100_yen_coin"
+        for ((; 0 <= used_count_of_100_yen_coin; used_count_of_100_yen_coin--))
         do
-            buf=$((x-ac*500-bc*100))
-            #echo "2buf=$buf"
-            if [ $buf -lt 0 ]; then
-                #echo "cannot calc when using $ac 500yen and $bc 100yen coins"
-                continue;
-            elif [ $buf -eq 0 ]; then
-                #echo "!!!! can calc when using $ac 500yen and $bc 100 yen coins"
+            tmp=$((shortage_amount-used_count_of_100_yen_coin*100))
+            #assert tmp % 50 == 0
+            if [ $tmp -le $((count_of_50_yen_coin*50)) ]; then
+                # e.g. tmp = 150 and there are 5 coins of 50 yen
+                #echo "[DEBUG] !!!! can calc when $used_count_of_500_yen_coin, $used_count_of_100_yen_coin, and $((tmp/50))"
                 number_of_calc_way=$((number_of_calc_way+1))
-            else
-                # calc a pattern changing the number of 50 yen coins.
-                for ((cc = c; 0 < cc; cc--))
-                do
-                    buf=$((x-ac*500-bc*100-cc*50))
-                    if [ $buf -ne 0 ]; then
-                        #echo "cannot calc when using $ac 500yen, $bc 100yen, and $cc 50 yen coins"
-                        continue;
-                    else
-                        #echo "!!!! can calc when using $ac 500yen, $bc 100yen, and $cc 50 yen coins"
-                        number_of_calc_way=$((number_of_calc_way+1))
-                    fi
-                done
             fi
         done
     fi
 done
 
 echo "$number_of_calc_way"
+exit 0
