@@ -6,59 +6,44 @@
 # My approach to solve
 # 1. sort the input numbers order by desc using "sort" command
 # 2. the result of the sort command has line, hence convert to array with "tr" command
-# 3. just calc total sum of (index0-index1), and (index2 - index3), ...
+# 3. calc total sum of (index0-index1), and (index2 - index3), ...
 
-read n
-read -a array
+read card_number #same as N
+read -a card_points_array #same as "a1 a2 a3 ..."
 
 # [BEGIN] validation
 
-if [ $n -lt 1 ] || [ $n -gt 100 ]; then
-    echo "invalid param n = $n"
+if [ $card_number -lt 1 ] || [ $card_number -gt 100 ]; then
+    echo "[ERROR] invalid param card_number = $card_number"
     exit 1
 fi
-for a in ${array[@]}; do
-    if [ $a -lt 1 ] || [ $a -gt 100 ]; then
-        echo "invalid param a = $a"
+for point in ${card_points_array[@]}; do
+    if [ $point -lt 1 ] || [ $point -gt 100 ]; then
+        echo "[ERROR] invalid param point = $point"
         exit 2
     fi
 done
-if [ ${#array[@]} -ne $n ]; then
-    echo "the length array of a is invalid. ${#array[@]}"
+if [ ${#card_points_array[@]} -ne $card_number ]; then
+    echo "[ERROR] the length card_points_array is invalid. ${#card_points_array[@]}"
     exit 3
 fi
 
 # [  END] validation
-# assert $n equals ${array[@]}
+# assert $card_number equals ${card_points_array[@]}
 
-sorted_array=($(printf "%s\n" "${array[@]}" | sort -n -r | tr "\n" " "))
-#echo "[DEBUG] sorted_array=${sorted_array[@]}, length=${#sorted_array[@]}"
+sorted_points_array=($(printf "%s\n" "${card_points_array[@]}" | sort -n -r | tr "\n" " "))
+#echo "[DEBUG] sorted_points_array=${sorted_points_array[@]}, length=${#sorted_points_array[@]}"
 
-# would like to get
-#length_of_array => loop_end_index
-#2 -> 1 (use index from 0 to 1)
-#3 -> 1
-#4 -> 3 (use index from 0 to 3)
-#5 -> 3
-#6 -> 5
-#7 -> 5
-#8 -> 7
-loop_end_index=$((n-1-n%2))
-#assert loop_end_index must be "odd", not "even"
-#echo "[DEBUG] loop_end_index=$loop_end_index"
-
-
-tmp=0
-for ((i = 0; i < loop_end_index; i+=2)); do
-    diff=$((${sorted_array[i]}-${sorted_array[i+1]}))
-    tmp=$((tmp+diff))
+score=0
+for ((i = 0; i < ${#sorted_points_array[@]}; i++)); do
+    if [ $((i % 2)) -eq 0 ]; then
+        # if even -> add (Alice's score)
+        score=$((score+${sorted_points_array[i]}))
+    else
+        # if odd -> subtract (Bob's score)
+        score=$((score-${sorted_points_array[i]}))
+    fi
 done
 
-if [ $((n%2)) -eq 1 ]; then
-    last_value=${sorted_array[n-1]}
-    tmp=$((tmp+last_value))
-fi
-
-echo $tmp
-
+echo $score
 exit 0
