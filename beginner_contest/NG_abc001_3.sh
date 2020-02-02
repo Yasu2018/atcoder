@@ -29,7 +29,7 @@ fi
 # [  END] validation
 
 readonly wind_threshold_array=(0 3 16 34 55 80 108 139 172 208 245 285 327)
-echo $((Dis*10/60))
+#echo "[DEBUG] $((Dis*10/60))"
 
 #round (四捨五入)
 wind_m10s=$(((Dis*100/60+5)/10))
@@ -47,7 +47,7 @@ if [ $W -eq 0 ]; then
     echo "C 0"
     exit 0
 fi
-echo "[DEBUG] W=$W"
+#echo "[DEBUG] W=$W"
 
 readonly dir_array=("N" "NNE" "NE" "ENE" "E" "ESE" "SE" "SSE" "S" "SSW" "SW" "WSW" "W" "WNW" "NW" "NNW")
 #Dir_index=$(awk "BEGIN { print ($Deg-112.5)/16 }")
@@ -56,7 +56,7 @@ if [ $Deg -lt 112 ]; then
 else
     Dir_index=$(((Deg+112)/225))
     Dir=${dir_array[Dir_index]}
-    echo "[DEBUG] Dir=$Dir, Dir_index=$Dir_index"
+    #echo "[DEBUG] Dir=$Dir, Dir_index=$Dir_index"
 fi
 
 echo "$Dir $W"
